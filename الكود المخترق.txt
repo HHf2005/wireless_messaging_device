@@ -1,0 +1,39 @@
+#include <SPI.h>
+#include <LoRa.h>
+
+const int ss = 5;
+const int rst = 14;
+const int dio0 = 2;
+const int statusLed = 4;
+
+void setup() {
+  Serial.begin(115200);
+  while (!Serial);
+
+  pinMode(statusLed, OUTPUT);
+  digitalWrite(statusLed, LOW);
+
+  SPI.begin(18, 19, 23, 5);
+  LoRa.setPins(ss, rst, dio0);
+
+  Serial.println("STARTING...");
+
+  if (!LoRa.begin(433E6)) {
+    while (true);
+  }
+}
+
+void loop() {
+  int packetSize = LoRa.parsePacket();
+
+  if (packetSize > 0 && LoRa.packetRssi() > -95) {
+    digitalWrite(statusLed, HIGH);
+
+    while (LoRa.available()) {
+      Serial.print((char)LoRa.read());
+    }
+
+    Serial.println();
+    digitalWrite(statusLed, LOW);
+  }
+}
