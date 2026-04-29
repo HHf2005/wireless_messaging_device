@@ -1,7 +1,6 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-// نفس المنافذ
 #define LORA_SCK   18
 #define LORA_MISO  19
 #define LORA_MOSI  23
@@ -42,10 +41,8 @@ void loop() {
     Serial.print("Relaying packet: ");
     Serial.println(incomingMsg);
 
-    // 2. انتظار بسيط (لتجنب التداخل مع المرسل الأصلي)
     delay(200);
 
-    // 3. إعادة الإرسال
     LoRa.beginPacket();
     LoRa.print(incomingMsg);
     LoRa.endPacket();
